@@ -1,0 +1,431 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Setup Project Repository",
+        "description": "Initialize the project repository with necessary configurations and documentation.",
+        "details": "Create a Git repository for the project. Include a README file with project overview, setup instructions, and contribution guidelines. Add a .gitignore file to exclude unnecessary files. Set up initial directory structure for source code, tests, and documentation.",
+        "testStrategy": "Verify repository setup by cloning it and checking for the presence of README, .gitignore, and directory structure.",
+        "priority": "medium",
+        "dependencies": [],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 2,
+        "title": "Develop Spring Boot Test Service",
+        "description": "Implement the Spring Boot service to simulate employee data with configurable attributes.",
+        "details": "Create a Spring Boot application using version 3.5. Implement REST API endpoints for employee data retrieval. Use Spring Boot Actuator for monitoring. Configure variable string field sizes to simulate memory consumption. Ensure the service is containerized for deployment.",
+        "testStrategy": "Write unit tests for API endpoints. Deploy the service locally and test API responses using Postman or curl.",
+        "priority": "high",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Set Up Spring Boot Project",
+            "description": "Initialize a new Spring Boot project using version 3.5 with necessary dependencies.",
+            "dependencies": [],
+            "details": "Use Spring Initializr or a similar tool to create a new Spring Boot project. Include dependencies for Spring Web, Spring Boot Actuator, and any other necessary libraries for REST API development.",
+            "status": "pending",
+            "testStrategy": "Verify the project builds successfully and the application starts without errors."
+          },
+          {
+            "id": 2,
+            "title": "Implement Employee Data Simulation",
+            "description": "Create a service to simulate employee data with configurable attributes.",
+            "dependencies": [
+              1
+            ],
+            "details": "Develop a service class that generates employee data. Include fields such as name, position, and department. Allow configuration of string field sizes to simulate different memory consumption scenarios.",
+            "status": "pending",
+            "testStrategy": "Write unit tests to ensure the service generates data correctly and respects configuration settings."
+          },
+          {
+            "id": 3,
+            "title": "Develop REST API Endpoints",
+            "description": "Create REST API endpoints for retrieving employee data.",
+            "dependencies": [
+              2
+            ],
+            "details": "Implement REST controllers to expose endpoints for fetching employee data. Ensure endpoints support operations like retrieving all employees and filtering by attributes.",
+            "status": "pending",
+            "testStrategy": "Use tools like Postman or curl to test the API endpoints for expected responses and error handling."
+          },
+          {
+            "id": 4,
+            "title": "Integrate Spring Boot Actuator",
+            "description": "Add Spring Boot Actuator to the project for monitoring and management.",
+            "dependencies": [
+              1
+            ],
+            "details": "Configure Spring Boot Actuator in the application. Enable essential endpoints such as health, metrics, and info. Customize actuator settings as needed.",
+            "status": "pending",
+            "testStrategy": "Access the actuator endpoints to ensure they provide the expected monitoring data."
+          },
+          {
+            "id": 5,
+            "title": "Configure Memory Consumption Simulation",
+            "description": "Adjust the application to simulate memory consumption through configurable string field sizes.",
+            "dependencies": [
+              2
+            ],
+            "details": "Modify the employee data simulation service to allow dynamic configuration of string sizes. Use application properties or environment variables to control these settings.",
+            "status": "pending",
+            "testStrategy": "Test the application with different configurations to ensure memory usage changes as expected."
+          },
+          {
+            "id": 6,
+            "title": "Containerize the Spring Boot Application",
+            "description": "Prepare the Spring Boot application for containerized deployment.",
+            "dependencies": [
+              1,
+              3,
+              4,
+              5
+            ],
+            "details": "Create a Dockerfile to containerize the application. Ensure the Dockerfile includes necessary instructions for building and running the application in a container. Test the container locally.",
+            "status": "pending",
+            "testStrategy": "Build and run the Docker container to verify the application starts correctly and all features are accessible."
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Create Basic K6 Load Testing Scripts",
+        "description": "Develop basic K6 scripts to simulate load on the Spring Boot service with simple patterns.",
+        "details": "Write K6 scripts using JavaScript to simulate steady load patterns. Configure request volumes and concurrency levels. Ensure scripts can be parameterized for different test scenarios.",
+        "testStrategy": "Run K6 scripts against the local Spring Boot service and verify load generation through logs and metrics.",
+        "priority": "high",
+        "dependencies": [
+          2
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 4,
+        "title": "Configure Kubernetes Deployment Manifests",
+        "description": "Prepare Kubernetes manifests for deploying the Spring Boot service on Docker Desktop.",
+        "details": "Write Kubernetes YAML files for deploying the Spring Boot service. Include configurations for service, deployment, and resource requests/limits. Ensure compatibility with Docker Desktop Kubernetes environment.",
+        "testStrategy": "Deploy the service on a local Kubernetes cluster and verify successful deployment using kubectl commands.",
+        "priority": "medium",
+        "dependencies": [
+          2
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 5,
+        "title": "Setup Basic Resource Monitoring",
+        "description": "Implement basic resource monitoring using native Kubernetes tools.",
+        "details": "Use kubectl commands to monitor CPU and memory usage of the deployed service. Document the process for capturing resource metrics during load tests.",
+        "testStrategy": "Conduct load tests and verify resource metrics are captured accurately using kubectl top command.",
+        "priority": "medium",
+        "dependencies": [
+          4
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 6,
+        "title": "Install and Configure Prometheus",
+        "description": "Set up Prometheus in an isolated monitoring namespace for metrics collection.",
+        "details": "Deploy Prometheus using Helm in a dedicated namespace. Configure Prometheus to scrape metrics from the Spring Boot service. Ensure resource isolation to prevent interference with test service sizing.",
+        "testStrategy": "Verify Prometheus installation by accessing the Prometheus UI and checking for metrics from the Spring Boot service.",
+        "priority": "high",
+        "dependencies": [
+          5
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create Monitoring Namespace",
+            "description": "Set up an isolated Kubernetes namespace for monitoring to ensure resource isolation.",
+            "dependencies": [],
+            "details": "Use kubectl to create a new namespace dedicated to monitoring. This will help in isolating the resources used by Prometheus from other services.",
+            "status": "pending",
+            "testStrategy": "Verify the namespace creation by listing all namespaces and checking for the newly created monitoring namespace."
+          },
+          {
+            "id": 2,
+            "title": "Deploy Prometheus using Helm",
+            "description": "Deploy Prometheus in the newly created monitoring namespace using Helm.",
+            "dependencies": [
+              1
+            ],
+            "details": "Use the Helm package manager to deploy Prometheus. Ensure that the Helm chart is configured to deploy Prometheus into the monitoring namespace created in the previous step.",
+            "status": "pending",
+            "testStrategy": "Check the status of the Prometheus pods in the monitoring namespace to ensure they are running correctly."
+          },
+          {
+            "id": 3,
+            "title": "Configure Prometheus to Scrape Spring Boot Metrics",
+            "description": "Set up Prometheus to collect metrics from the Spring Boot service.",
+            "dependencies": [
+              2
+            ],
+            "details": "Modify the Prometheus configuration to include a scrape job for the Spring Boot service. Ensure the correct service endpoints and ports are specified.",
+            "status": "pending",
+            "testStrategy": "Verify that Prometheus is successfully scraping metrics by checking the targets page in the Prometheus UI."
+          },
+          {
+            "id": 4,
+            "title": "Ensure Resource Isolation",
+            "description": "Configure resource limits and requests for Prometheus to prevent interference with other services.",
+            "dependencies": [
+              2
+            ],
+            "details": "Edit the Prometheus deployment to include resource requests and limits in the Kubernetes configuration. This ensures that Prometheus does not consume more resources than allocated.",
+            "status": "pending",
+            "testStrategy": "Monitor the resource usage of the Prometheus pods to ensure they are within the specified limits."
+          },
+          {
+            "id": 5,
+            "title": "Validate Prometheus Setup",
+            "description": "Perform a comprehensive validation of the Prometheus setup to ensure it is functioning as expected.",
+            "dependencies": [
+              3,
+              4
+            ],
+            "details": "Conduct end-to-end testing of the Prometheus setup by checking the availability of metrics, the accuracy of data collection, and the responsiveness of the Prometheus UI.",
+            "status": "pending",
+            "testStrategy": "Use test queries in the Prometheus UI to ensure metrics are being collected and displayed correctly. Validate that alerts (if configured) are triggered appropriately."
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "title": "Integrate VPA for Baseline Recommendations",
+        "description": "Configure Vertical Pod Autoscaler to provide baseline resource recommendations.",
+        "details": "Install VPA in the Kubernetes cluster. Configure VPA to monitor the Spring Boot service and provide resource recommendations based on historical data.",
+        "testStrategy": "Verify VPA recommendations by checking the suggested resource requests/limits in the Kubernetes cluster.",
+        "priority": "medium",
+        "dependencies": [
+          6
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Install Vertical Pod Autoscaler",
+            "description": "Install the Vertical Pod Autoscaler (VPA) on the Kubernetes cluster running on Docker Desktop.",
+            "dependencies": [],
+            "details": "Use kubectl to apply the VPA installation manifests. Ensure that the Kubernetes cluster is running on Docker Desktop and that you have the necessary permissions to install components. Verify the installation by checking the VPA components are running using kubectl get pods -n kube-system.",
+            "status": "pending",
+            "testStrategy": "Verify the VPA components are running by executing kubectl get pods -n kube-system and checking for VPA-related pods."
+          },
+          {
+            "id": 2,
+            "title": "Deploy Spring Boot Service",
+            "description": "Deploy the Spring Boot service on the Kubernetes cluster to be monitored by VPA.",
+            "dependencies": [
+              1
+            ],
+            "details": "Create a Kubernetes deployment manifest for the Spring Boot service. Ensure the service is configured correctly with the necessary resource requests and limits. Apply the manifest using kubectl apply -f <manifest-file>.",
+            "status": "pending",
+            "testStrategy": "Confirm the Spring Boot service is running by checking the pod status with kubectl get pods."
+          },
+          {
+            "id": 3,
+            "title": "Configure VPA for Spring Boot Service",
+            "description": "Configure the VPA to monitor the deployed Spring Boot service and provide resource recommendations.",
+            "dependencies": [
+              2
+            ],
+            "details": "Create a VPA configuration manifest targeting the Spring Boot deployment. Specify the update mode and any necessary policies. Apply the VPA configuration using kubectl apply -f <vpa-config-file>.",
+            "status": "pending",
+            "testStrategy": "Check that the VPA is associated with the Spring Boot deployment by using kubectl describe vpa <vpa-name> and verify the configuration."
+          },
+          {
+            "id": 4,
+            "title": "Validate VPA Recommendations",
+            "description": "Validate that the VPA is providing baseline resource recommendations based on historical data.",
+            "dependencies": [
+              3
+            ],
+            "details": "Monitor the VPA recommendations by checking the status and events using kubectl describe vpa <vpa-name>. Ensure that the recommendations are being updated based on the resource usage of the Spring Boot service.",
+            "status": "pending",
+            "testStrategy": "Review the VPA status and events to confirm that recommendations are being generated. Adjust the Spring Boot service load and verify that VPA recommendations change accordingly."
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "title": "Develop Grafana Dashboards",
+        "description": "Create Grafana dashboards for visualizing resource metrics collected by Prometheus.",
+        "details": "Deploy Grafana in the monitoring namespace. Connect Grafana to Prometheus as a data source. Design dashboards to display CPU, memory usage, and other relevant metrics.",
+        "testStrategy": "Access Grafana dashboards and verify accurate visualization of metrics collected from Prometheus.",
+        "priority": "medium",
+        "dependencies": [
+          6
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 9,
+        "title": "Implement Advanced Load Testing Scenarios",
+        "description": "Develop advanced K6 scripts for spike and elasticity testing scenarios.",
+        "details": "Enhance K6 scripts to include spike, ramp-up, and ramp-down patterns. Simulate varying load conditions to test service elasticity and resource scaling.",
+        "testStrategy": "Run advanced K6 scripts and verify service behavior under different load conditions through metrics and logs.",
+        "priority": "medium",
+        "dependencies": [
+          3,
+          8
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Set Up K6 Environment",
+            "description": "Prepare the K6 testing environment by installing necessary tools and dependencies.",
+            "dependencies": [],
+            "details": "Ensure K6 is installed on your local machine or server. Verify the installation by running a basic K6 script. Install any additional libraries or plugins required for advanced testing scenarios.",
+            "status": "pending",
+            "testStrategy": "Run a simple K6 script to confirm the environment is correctly set up and functioning."
+          },
+          {
+            "id": 2,
+            "title": "Develop Spike Testing Script",
+            "description": "Create a K6 script to simulate a spike load scenario, where the load suddenly increases to a peak and then drops.",
+            "dependencies": [
+              1
+            ],
+            "details": "Write a K6 script that uses the 'stages' option to define a sudden increase in virtual users followed by a rapid decrease. Ensure the script logs relevant metrics for analysis.",
+            "status": "pending",
+            "testStrategy": "Execute the script and verify that the load pattern matches the spike scenario. Check logs and metrics for expected behavior."
+          },
+          {
+            "id": 3,
+            "title": "Implement Ramp-Up Load Testing Script",
+            "description": "Develop a K6 script to simulate a gradual increase in load over a specified period.",
+            "dependencies": [
+              1
+            ],
+            "details": "Create a K6 script using the 'stages' option to gradually increase the number of virtual users over time. Ensure the script captures performance metrics during the ramp-up phase.",
+            "status": "pending",
+            "testStrategy": "Run the script and confirm that the load increases gradually as expected. Analyze performance metrics to ensure system stability."
+          },
+          {
+            "id": 4,
+            "title": "Create Ramp-Down Load Testing Script",
+            "description": "Write a K6 script to simulate a gradual decrease in load after a peak.",
+            "dependencies": [
+              1
+            ],
+            "details": "Develop a K6 script that uses the 'stages' option to gradually decrease the number of virtual users from a peak load. Ensure the script logs performance data throughout the ramp-down phase.",
+            "status": "pending",
+            "testStrategy": "Execute the script and verify the load decreases gradually. Check performance metrics to ensure proper resource deallocation."
+          },
+          {
+            "id": 5,
+            "title": "Simulate Elasticity Testing Scenario",
+            "description": "Combine spike, ramp-up, and ramp-down scripts to test the system's elasticity and resource scaling capabilities.",
+            "dependencies": [
+              2,
+              3,
+              4
+            ],
+            "details": "Integrate the previously developed scripts into a comprehensive test that simulates varying load conditions. Monitor system responses to ensure it scales resources appropriately.",
+            "status": "pending",
+            "testStrategy": "Run the integrated test and analyze system behavior under different load conditions. Verify that the system scales resources effectively and maintains performance."
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "title": "Perform Horizontal Scaling Calculations",
+        "description": "Analyze resource usage for single-instance and extrapolate for multi-instance scenarios.",
+        "details": "Use collected metrics to calculate resource needs for horizontal scaling. Provide recommendations for HPA configuration based on analysis.",
+        "testStrategy": "Validate scaling calculations by simulating multi-instance scenarios and observing resource distribution.",
+        "priority": "medium",
+        "dependencies": [
+          9
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Collect and Analyze Single-Instance Resource Metrics",
+            "description": "Gather and analyze resource usage metrics from a single instance to understand baseline performance.",
+            "dependencies": [],
+            "details": "Use monitoring tools to collect CPU, memory, and network usage metrics from a single instance during load tests. Analyze these metrics to determine average and peak resource usage.",
+            "status": "pending",
+            "testStrategy": "Verify the accuracy of collected metrics by comparing them with expected values from previous load tests."
+          },
+          {
+            "id": 2,
+            "title": "Extrapolate Multi-Instance Resource Requirements",
+            "description": "Use single-instance metrics to calculate the resource requirements for multiple instances.",
+            "dependencies": [
+              1
+            ],
+            "details": "Based on the analyzed single-instance metrics, calculate the total resource requirements for scaling to multiple instances. Consider factors such as expected load increase and redundancy needs.",
+            "status": "pending",
+            "testStrategy": "Cross-verify calculations with historical data from similar scaling scenarios to ensure accuracy."
+          },
+          {
+            "id": 3,
+            "title": "Determine Horizontal Pod Autoscaler (HPA) Thresholds",
+            "description": "Define the appropriate HPA thresholds for scaling based on the extrapolated resource requirements.",
+            "dependencies": [
+              2
+            ],
+            "details": "Set HPA thresholds for CPU and memory based on the calculated multi-instance resource requirements. Ensure thresholds align with business requirements for performance and cost.",
+            "status": "pending",
+            "testStrategy": "Simulate load conditions to test if the HPA thresholds trigger scaling actions appropriately."
+          },
+          {
+            "id": 4,
+            "title": "Provide Recommendations for HPA Configuration",
+            "description": "Compile and document recommendations for configuring the HPA based on the analysis.",
+            "dependencies": [
+              3
+            ],
+            "details": "Create a detailed document outlining the recommended HPA configuration, including threshold values, scaling policies, and any assumptions made during calculations.",
+            "status": "pending",
+            "testStrategy": "Review the document with stakeholders to ensure it meets business and technical requirements."
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "title": "Automate Report Generation for Sizing Recommendations",
+        "description": "Create automated reports summarizing resource sizing recommendations based on test results.",
+        "details": "Develop scripts to extract metrics and generate reports with resource recommendations. Include confidence intervals and historical data analysis.",
+        "testStrategy": "Generate sample reports and verify accuracy and clarity of recommendations.",
+        "priority": "low",
+        "dependencies": [
+          10
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 12,
+        "title": "Document Best Practices and Deployment Guidelines",
+        "description": "Compile comprehensive documentation for system setup, testing, and deployment.",
+        "details": "Write detailed documentation covering configuration management, testing workflows, and deployment procedures. Include examples and best practices for resource optimization.",
+        "testStrategy": "Review documentation for completeness and clarity. Conduct a walkthrough with a new user to ensure usability.",
+        "priority": "low",
+        "dependencies": [
+          11
+        ],
+        "status": "pending",
+        "subtasks": []
+      }
+    ],
+    "metadata": {
+      "created": "2025-06-24T12:37:26.924Z",
+      "updated": "2025-06-24T12:37:26.924Z",
+      "description": "Tasks for master context"
+    }
+  }
+}

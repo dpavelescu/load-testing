@@ -1,0 +1,168 @@
+<context>
+# Overview  
+This project aims to develop a comprehensive Kubernetes pod resource sizing solution that accurately determines optimal CPU and memory allocations based on empirical load testing data. The system addresses the critical challenge of right-sizing pod resources to balance performance, cost efficiency, and system reliability while maintaining elasticity for varying load patterns.
+
+The solution targets DevOps engineers, platform teams, and application architects who need data-driven insights for Kubernetes resource planning. It provides automated resource recommendations through load simulation, eliminating guesswork and reducing both over-provisioning costs and under-provisioning risks.
+
+# Core Features  
+## Load Testing Framework
+- K6-based load generation with configurable patterns (steady, spike, ramp-up/down)
+- Parameterized load scenarios supporting different request volumes and concurrency levels
+- Configurable data payload sizes per request for memory impact simulation
+- Database latency simulation with adjustable response times
+
+## Resource Monitoring & Analysis
+- Vertical Pod Autoscaler (VPA) integration for baseline resource recommendations
+- Real-time resource consumption tracking during load tests
+- Correlation analysis between load patterns and resource utilization
+- Prometheus metrics collection with Grafana visualization dashboards
+
+## Horizontal Scaling Calculations
+- Single-instance resource profiling with extrapolation to multi-instance scenarios
+- Horizontal Pod Autoscaler (HPA) configuration recommendations
+- Load distribution analysis across multiple pod instances
+- Elasticity modeling for dynamic scaling scenarios
+
+## Spring Boot Test Service
+- Configurable employee data simulation with variable attributes
+- Adjustable string field sizes for memory consumption testing
+- REST API endpoints for different data retrieval patterns
+- Database interaction simulation with configurable latency
+
+# User Experience  
+## Primary Users
+- **DevOps Engineers**: Need accurate resource sizing for production deployments
+- **Platform Teams**: Require standardized sizing methodologies across applications
+- **Application Architects**: Must optimize resource allocation during design phase
+
+## Key User Flows
+1. **Configuration Setup**: Define load patterns, data sizes, and test parameters
+2. **Load Test Execution**: Run automated tests while monitoring resource consumption
+3. **Analysis & Visualization**: Review metrics through Grafana dashboards
+4. **Resource Optimization**: Apply VPA recommendations and validate through re-testing
+5. **Production Deployment**: Implement optimized resource configurations
+
+## UI/UX Considerations
+- Configuration files for easy parameter adjustment
+- Grafana dashboards for intuitive metrics visualization
+- Command-line interface for automated testing workflows
+- Clear documentation and examples for quick onboarding
+</context>
+
+<PRD>
+# Technical Architecture  
+## System Components
+- **K6 Load Generator**: JavaScript-based load testing with custom scenarios
+- **Spring Boot Test Service**: Microservice simulating real application behavior
+- **Prometheus**: Time-series metrics collection and storage
+- **Grafana**: Visualization and dashboards for metrics analysis
+- **Vertical Pod Autoscaler**: Kubernetes-native resource recommendation engine
+- **Kubernetes Cluster**: Target environment for resource sizing
+
+## Data Models
+- **Load Configuration**: Test parameters, concurrency levels, duration patterns
+- **Employee Data Model**: Configurable attributes with variable string field sizes
+- **Resource Metrics**: CPU/memory utilization, request latency, throughput data
+- **Sizing Recommendations**: Optimal resource requests/limits with confidence intervals
+
+## APIs and Integrations
+- **Spring Boot REST API**: Employee data retrieval endpoints with configurable responses
+- **Kubernetes API**: Resource monitoring and VPA recommendation retrieval
+- **Prometheus Query API**: Metrics extraction for analysis
+- **K6 JavaScript API**: Custom load testing scenarios and metric collection
+
+## Infrastructure Requirements
+- Docker Desktop Kubernetes cluster on Windows with VPA enabled
+- Prometheus operator installation in dedicated monitoring namespace
+- Grafana instance with Kubernetes dashboards in monitoring namespace
+- Container registry for Spring Boot service deployment
+- Resource isolation for monitoring components to prevent test interference
+
+# Development Roadmap  
+## Phase 1: Foundation & Basic Load Testing
+- Spring Boot 3.5 service with configurable employee data simulation
+- Basic K6 load testing scripts with simple load patterns
+- Kubernetes deployment manifests for test service on Docker Desktop
+- Basic resource monitoring using kubectl commands
+- Monitoring namespace setup with resource quotas for isolation
+
+## Phase 2: Monitoring & Metrics Collection
+- Prometheus integration in isolated monitoring namespace with custom metrics collection
+- VPA configuration and baseline resource recommendations
+- K6 integration with Prometheus for load test metrics
+- Basic Grafana dashboards for resource visualization with monitoring isolation
+
+## Phase 3: Advanced Load Patterns & Analysis
+- Configurable spike and elasticity testing scenarios
+- Horizontal scaling calculations and HPA recommendations
+- Advanced Grafana dashboards with correlation analysis
+- Automated report generation for sizing recommendations
+
+## Phase 4: Optimization & Production Readiness
+- Configuration management for easy parameter adjustment
+- Database latency simulation and configurable response patterns
+- Performance validation workflows and regression testing
+- Documentation and best practices for production deployment
+
+# Logical Dependency Chain
+## Foundation First (Phase 1)
+- Spring Boot service must be built before load testing can begin
+- Kubernetes deployment configuration required for service hosting
+- Basic K6 scripts needed to establish load testing capabilities
+- Resource monitoring foundation using native Kubernetes tools
+
+## Monitoring Infrastructure (Phase 2)
+- Prometheus installation and configuration depends on Kubernetes foundation
+- VPA setup requires operational Spring Boot service for baseline profiling
+- Grafana dashboards require Prometheus data collection to be functional
+- K6-Prometheus integration builds upon basic load testing framework
+
+## Advanced Analytics (Phase 3)
+- Spike testing scenarios require stable monitoring infrastructure
+- Horizontal scaling analysis depends on single-instance profiling completion
+- Advanced dashboards require comprehensive metrics collection from Phase 2
+- Correlation analysis needs historical data from multiple test runs
+
+## Production Integration (Phase 4)
+- Configuration management requires proven load testing scenarios
+- Database simulation builds upon established service architecture
+- Validation workflows require complete monitoring and analysis capabilities
+- Documentation synthesis requires all technical components to be operational
+
+# Risks and Mitigations  
+## Technical Challenges
+- **Risk**: Complex correlation between load patterns and resource consumption
+- **Mitigation**: Implement incremental testing with clear baseline establishment and statistical analysis of results
+
+- **Risk**: Kubernetes cluster resource limitations affecting test accuracy
+- **Mitigation**: Design tests with resource quotas and implement cluster capacity validation before testing
+
+## MVP Definition
+- **Risk**: Feature scope creep preventing quick value delivery
+- **Mitigation**: Focus on single-instance profiling with basic load patterns as MVP, ensuring rapid feedback loop
+
+- **Risk**: Over-engineering monitoring infrastructure before proving core concept
+- **Mitigation**: Start with minimal viable monitoring using native tools, gradually enhance with Prometheus/Grafana
+
+## Resource Constraints
+- **Risk**: Insufficient Kubernetes cluster resources for comprehensive testing
+- **Mitigation**: Implement resource cleanup automation and design tests for minimal cluster footprint
+
+- **Risk**: Complex configuration management hindering adoption
+- **Mitigation**: Prioritize convention over configuration with sensible defaults and simple override mechanisms
+
+# Appendix  
+## Research Findings
+- VPA provides recommendations but requires historical data for accuracy
+- K6 offers superior performance and scripting flexibility compared to traditional tools
+- Prometheus metrics retention should span multiple test cycles for trend analysis
+- Spring Boot Actuator provides excellent integration with Kubernetes monitoring
+
+## Technical Specifications
+- **Kubernetes Environment**: Docker Desktop Kubernetes on Windows with VPA v0.9+
+- **Prometheus**: 2.30+ deployed in dedicated monitoring namespace with resource isolation
+- **Grafana**: 8.0+ deployed in monitoring namespace with Prometheus data source
+- **K6**: 0.35+ with Prometheus remote write capability
+- **Spring Boot**: 3.5 (latest) with Actuator and Micrometer metrics
+- **Monitoring Isolation**: Prometheus and Grafana deployed with separate resource quotas to prevent interference with test service sizing
+</PRD>
