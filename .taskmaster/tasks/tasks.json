@@ -63,7 +63,7 @@
               1
             ],
             "details": "Configure Spring Boot Actuator in the application. Enable essential endpoints such as health, metrics, and info. Customize actuator settings as needed.",
-            "status": "pending",
+            "status": "in-progress",
             "testStrategy": "Access the actuator endpoints to ensure they provide the expected monitoring data."
           },
           {
@@ -424,7 +424,7 @@
     ],
     "metadata": {
       "created": "2025-06-24T12:37:26.924Z",
-      "updated": "2025-06-25T03:24:25.317Z",
+      "updated": "2025-06-25T03:26:55.203Z",
       "description": "Tasks for master context"
     }
   }
