@@ -6,7 +6,7 @@ This project provides a comprehensive solution for accurately determining optima
 ## Architecture
 - **Spring Boot 3.5 Test Service** - Simulates employee data with configurable memory consumption
 - **K6 Load Testing** - Generates various load patterns (steady, spike, ramp-up/down)
-- **Prometheus & Grafana** - Metrics collection and visualization in isolated monitoring namespace
+- **Minimal Prometheus** - Essential metrics collection for resource sizing
 - **Vertical Pod Autoscaler (VPA)** - Baseline resource recommendations
 - **Docker Desktop Kubernetes** - Target deployment environment
 
@@ -20,7 +20,7 @@ This project provides a comprehensive solution for accurately determining optima
 ├── k6-scripts/            # Load testing scripts
 ├── kubernetes/            # Kubernetes manifests
 │   ├── app/              # Application deployment
-│   ├── monitoring/       # Prometheus/Grafana setup
+│   ├── monitoring/       # Minimal Prometheus setup
 │   └── vpa/              # VPA configurations
 ├── docs/                 # Project documentation
 └── .taskmaster/          # Task Master project management
@@ -33,7 +33,6 @@ This project provides a comprehensive solution for accurately determining optima
 - Java 21+
 - Maven 3.6+
 - K6 load testing tool
-- Helm 3.x
 - kubectl
 
 ### Quick Setup
@@ -49,12 +48,18 @@ This project provides a comprehensive solution for accurately determining optima
    mvn clean package
    ```
 
-3. **Deploy to Kubernetes**
+3. **Deploy application to Kubernetes**
    ```bash
    kubectl apply -f kubernetes/app/
    ```
 
-4. **Run load tests**
+4. **Set up monitoring**
+   ```bash
+   kubectl apply -f kubernetes/monitoring/
+   ```
+   *For detailed monitoring setup, see [docs/monitoring-setup.md](docs/monitoring-setup.md)*
+
+5. **Run load tests**
    ```bash
    k6 run k6-scripts/basic-load-test.js
    ```
@@ -66,6 +71,12 @@ This project provides a comprehensive solution for accurately determining optima
 - **Automated Analysis** - Resource usage correlation with load patterns
 - **HPA Recommendations** - Horizontal scaling calculations and configurations
 - **Comprehensive Reporting** - Automated sizing recommendation reports
+- **Minimal Monitoring** - Essential Prometheus metrics without complexity
+
+## Security Notes
+- Monitoring uses simple, password-free setup for development
+- All components run in isolated namespaces
+- See [docs/monitoring-setup.md](docs/monitoring-setup.md) for security considerations
 
 ## Usage
 Detailed usage instructions and examples can be found in the `docs/` directory.
@@ -78,6 +89,7 @@ This project is licensed under the MIT License - see the `docs/LICENSE` file for
 
 ## Documentation
 - [Setup Guide](docs/setup.md)
+- [Monitoring Setup Guide](docs/monitoring-setup.md)
 - [Load Testing Guide](docs/load-testing.md)
 - [Resource Sizing Guide](docs/resource-sizing.md)
 - [API Reference](docs/api-reference.md)

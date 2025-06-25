@@ -135,67 +135,67 @@
       {
         "id": 6,
         "title": "Install and Configure Prometheus",
-        "description": "Set up Prometheus in an isolated monitoring namespace for metrics collection.",
-        "details": "Deploy Prometheus using Helm in a dedicated namespace. Configure Prometheus to scrape metrics from the Spring Boot service. Ensure resource isolation to prevent interference with test service sizing.",
-        "testStrategy": "Verify Prometheus installation by accessing the Prometheus UI and checking for metrics from the Spring Boot service.",
-        "priority": "high",
+        "description": "Set up a minimal Prometheus installation for metrics collection focused on core resource sizing goals.",
+        "status": "in-progress",
         "dependencies": [
           5
         ],
-        "status": "pending",
+        "priority": "high",
+        "details": "Deploy a simplified Prometheus setup in a dedicated namespace. Configure Prometheus to directly scrape metrics from the Spring Boot service using Spring Boot Actuator. Ensure the deployment is a single container without complex configurations or additional components.",
+        "testStrategy": "Verify Prometheus installation by accessing the Prometheus UI and checking for metrics from the Spring Boot service. Ensure immediate functionality and alignment with project objectives.",
         "subtasks": [
           {
             "id": 1,
             "title": "Create Monitoring Namespace",
             "description": "Set up an isolated Kubernetes namespace for monitoring to ensure resource isolation.",
+            "status": "in-progress",
             "dependencies": [],
             "details": "Use kubectl to create a new namespace dedicated to monitoring. This will help in isolating the resources used by Prometheus from other services.",
-            "status": "pending",
             "testStrategy": "Verify the namespace creation by listing all namespaces and checking for the newly created monitoring namespace."
           },
           {
             "id": 2,
-            "title": "Deploy Prometheus using Helm",
-            "description": "Deploy Prometheus in the newly created monitoring namespace using Helm.",
+            "title": "Deploy Minimal Prometheus Setup",
+            "description": "Deploy a minimal Prometheus setup in the newly created monitoring namespace.",
+            "status": "pending",
             "dependencies": [
               1
             ],
-            "details": "Use the Helm package manager to deploy Prometheus. Ensure that the Helm chart is configured to deploy Prometheus into the monitoring namespace created in the previous step.",
-            "status": "pending",
-            "testStrategy": "Check the status of the Prometheus pods in the monitoring namespace to ensure they are running correctly."
+            "details": "Deploy Prometheus as a single container in the monitoring namespace. Avoid using complex configurations or additional components like Grafana or AlertManager.",
+            "testStrategy": "Check the status of the Prometheus pod in the monitoring namespace to ensure it is running correctly."
           },
           {
             "id": 3,
             "title": "Configure Prometheus to Scrape Spring Boot Metrics",
-            "description": "Set up Prometheus to collect metrics from the Spring Boot service.",
+            "description": "Set up Prometheus to collect metrics from the Spring Boot service using Spring Boot Actuator.",
+            "status": "pending",
             "dependencies": [
               2
             ],
-            "details": "Modify the Prometheus configuration to include a scrape job for the Spring Boot service. Ensure the correct service endpoints and ports are specified.",
-            "status": "pending",
+            "details": "Modify the Prometheus configuration to include a scrape job for the Spring Boot service. Ensure the correct service endpoints and ports are specified for direct scraping.",
             "testStrategy": "Verify that Prometheus is successfully scraping metrics by checking the targets page in the Prometheus UI."
           },
           {
             "id": 4,
             "title": "Ensure Resource Isolation",
             "description": "Configure resource limits and requests for Prometheus to prevent interference with other services.",
+            "status": "pending",
             "dependencies": [
               2
             ],
             "details": "Edit the Prometheus deployment to include resource requests and limits in the Kubernetes configuration. This ensures that Prometheus does not consume more resources than allocated.",
-            "status": "pending",
             "testStrategy": "Monitor the resource usage of the Prometheus pods to ensure they are within the specified limits."
           },
           {
             "id": 5,
             "title": "Validate Prometheus Setup",
             "description": "Perform a comprehensive validation of the Prometheus setup to ensure it is functioning as expected.",
+            "status": "pending",
             "dependencies": [
               3,
               4
             ],
             "details": "Conduct end-to-end testing of the Prometheus setup by checking the availability of metrics, the accuracy of data collection, and the responsiveness of the Prometheus UI.",
-            "status": "pending",
             "testStrategy": "Use test queries in the Prometheus UI to ensure metrics are being collected and displayed correctly. Validate that alerts (if configured) are triggered appropriately."
           }
         ]
@@ -424,7 +424,7 @@
     ],
     "metadata": {
       "created": "2025-06-24T12:37:26.924Z",
-      "updated": "2025-06-25T11:14:39.467Z",
+      "updated": "2025-06-25T11:22:22.548Z",
       "description": "Tasks for master context"
     }
   }
