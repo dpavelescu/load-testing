@@ -74,7 +74,7 @@
               2
             ],
             "details": "Modify the employee data simulation service to allow dynamic configuration of string sizes. Use application properties or environment variables to control these settings.",
-            "status": "in-progress",
+            "status": "done",
             "testStrategy": "Test the application with different configurations to ensure memory usage changes as expected."
           },
           {
@@ -88,7 +88,7 @@
               5
             ],
             "details": "Create a Dockerfile to containerize the application. Ensure the Dockerfile includes necessary instructions for building and running the application in a container. Test the container locally.",
-            "status": "pending",
+            "status": "in-progress",
             "testStrategy": "Build and run the Docker container to verify the application starts correctly and all features are accessible."
           }
         ]
@@ -424,7 +424,7 @@
     ],
     "metadata": {
       "created": "2025-06-24T12:37:26.924Z",
-      "updated": "2025-06-25T06:24:59.978Z",
+      "updated": "2025-06-25T06:37:41.182Z",
       "description": "Tasks for master context"
     }
   }
