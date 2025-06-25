@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: resource-sizing-config
+  namespace: load-testing
+  labels:
+    app: resource-sizing-service
+    component: configuration
+data:
+  application.properties: |
+    # Spring Boot configuration for Kubernetes
+    spring.application.name=resource-sizing-service
+    server.port=8080
+    
+    # Actuator configuration
+    management.endpoints.web.exposure.include=health,info,metrics,prometheus
+    management.endpoint.health.show-details=always
+    management.health.diskspace.enabled=true
+    management.health.ping.enabled=true
+    
+    # Prometheus metrics
+    management.prometheus.metrics.export.enabled=true
+    management.endpoint.prometheus.access=unrestricted
+    
+    # Employee data simulation defaults
+    app.employee.default-count=100
+    app.employee.default-string-size=512
+    
+    # Memory simulation configuration
+    app.memory.cache.ttl-seconds=300
+    app.memory.cache.max-size=1000
+    
+    # Memory scenarios
+    app.memory.scenarios.light.count=50
+    app.memory.scenarios.light.string-size=256
+    app.memory.scenarios.medium.count=200
+    app.memory.scenarios.medium.string-size=1024
+    app.memory.scenarios.heavy.count=500
+    app.memory.scenarios.heavy.string-size=4096
+    app.memory.scenarios.extreme.count=1000
+    app.memory.scenarios.extreme.string-size=8192
+    
+    # Logging for Kubernetes
+    logging.level.com.loadtesting=INFO
+    logging.level.root=WARN
+    logging.pattern.console=%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n
