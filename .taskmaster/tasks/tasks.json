@@ -63,7 +63,7 @@
               1
             ],
             "details": "Configure Spring Boot Actuator in the application. Enable essential endpoints such as health, metrics, and info. Customize actuator settings as needed.",
-            "status": "in-progress",
+            "status": "done",
             "testStrategy": "Access the actuator endpoints to ensure they provide the expected monitoring data."
           },
           {
@@ -74,7 +74,7 @@
               2
             ],
             "details": "Modify the employee data simulation service to allow dynamic configuration of string sizes. Use application properties or environment variables to control these settings.",
-            "status": "pending",
+            "status": "in-progress",
             "testStrategy": "Test the application with different configurations to ensure memory usage changes as expected."
           },
           {
@@ -424,7 +424,7 @@
     ],
     "metadata": {
       "created": "2025-06-24T12:37:26.924Z",
-      "updated": "2025-06-25T03:26:55.203Z",
+      "updated": "2025-06-25T06:24:59.978Z",
       "description": "Tasks for master context"
     }
   }
