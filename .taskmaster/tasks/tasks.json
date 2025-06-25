@@ -52,7 +52,7 @@
               2
             ],
             "details": "Implement REST controllers to expose endpoints for fetching employee data. Ensure endpoints support operations like retrieving all employees and filtering by attributes.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Use tools like Postman or curl to test the API endpoints for expected responses and error handling."
           },
           {
@@ -424,7 +424,7 @@
     ],
     "metadata": {
       "created": "2025-06-24T12:37:26.924Z",
-      "updated": "2025-06-25T03:02:49.105Z",
+      "updated": "2025-06-25T03:24:25.317Z",
       "description": "Tasks for master context"
     }
   }
