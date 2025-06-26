@@ -229,7 +229,7 @@
               1
             ],
             "details": "Create a Kubernetes deployment manifest for the Spring Boot service. Ensure the service is configured correctly with the necessary resource requests and limits. Apply the manifest using kubectl apply -f <manifest-file>.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Confirm the Spring Boot service is running by checking the pod status with kubectl get pods."
           },
           {
@@ -240,7 +240,7 @@
               2
             ],
             "details": "Create a VPA configuration manifest targeting the Spring Boot deployment. Specify the update mode and any necessary policies. Apply the VPA configuration using kubectl apply -f <vpa-config-file>.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Check that the VPA is associated with the Spring Boot deployment by using kubectl describe vpa <vpa-name> and verify the configuration."
           },
           {
@@ -424,7 +424,7 @@
     ],
     "metadata": {
       "created": "2025-06-24T12:37:26.924Z",
-      "updated": "2025-06-26T04:14:39.035Z",
+      "updated": "2025-06-26T04:22:31.311Z",
       "description": "Tasks for master context"
     }
   }

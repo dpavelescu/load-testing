@@ -7,7 +7,7 @@ metadata:
     app: resource-sizing-service
     version: v1
 spec:
-  replicas: 1
+  replicas: 1  # Single replica for baseline resource sizing measurements
   selector:
     matchLabels:
       app: resource-sizing-service
