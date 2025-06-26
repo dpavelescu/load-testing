@@ -136,7 +136,7 @@
         "id": 6,
         "title": "Install and Configure Prometheus",
         "description": "Set up a minimal Prometheus installation for metrics collection focused on core resource sizing goals.",
-        "status": "in-progress",
+        "status": "done",
         "dependencies": [
           5
         ],
@@ -148,7 +148,7 @@
             "id": 1,
             "title": "Create Monitoring Namespace",
             "description": "Set up an isolated Kubernetes namespace for monitoring to ensure resource isolation.",
-            "status": "in-progress",
+            "status": "done",
             "dependencies": [],
             "details": "Use kubectl to create a new namespace dedicated to monitoring. This will help in isolating the resources used by Prometheus from other services.",
             "testStrategy": "Verify the namespace creation by listing all namespaces and checking for the newly created monitoring namespace."
@@ -157,7 +157,7 @@
             "id": 2,
             "title": "Deploy Minimal Prometheus Setup",
             "description": "Deploy a minimal Prometheus setup in the newly created monitoring namespace.",
-            "status": "pending",
+            "status": "done",
             "dependencies": [
               1
             ],
@@ -168,7 +168,7 @@
             "id": 3,
             "title": "Configure Prometheus to Scrape Spring Boot Metrics",
             "description": "Set up Prometheus to collect metrics from the Spring Boot service using Spring Boot Actuator.",
-            "status": "pending",
+            "status": "done",
             "dependencies": [
               2
             ],
@@ -179,7 +179,7 @@
             "id": 4,
             "title": "Ensure Resource Isolation",
             "description": "Configure resource limits and requests for Prometheus to prevent interference with other services.",
-            "status": "pending",
+            "status": "done",
             "dependencies": [
               2
             ],
@@ -190,7 +190,7 @@
             "id": 5,
             "title": "Validate Prometheus Setup",
             "description": "Perform a comprehensive validation of the Prometheus setup to ensure it is functioning as expected.",
-            "status": "pending",
+            "status": "done",
             "dependencies": [
               3,
               4
@@ -210,7 +210,7 @@
         "dependencies": [
           6
         ],
-        "status": "pending",
+        "status": "in-progress",
         "subtasks": [
           {
             "id": 1,
@@ -218,7 +218,7 @@
             "description": "Install the Vertical Pod Autoscaler (VPA) on the Kubernetes cluster running on Docker Desktop.",
             "dependencies": [],
             "details": "Use kubectl to apply the VPA installation manifests. Ensure that the Kubernetes cluster is running on Docker Desktop and that you have the necessary permissions to install components. Verify the installation by checking the VPA components are running using kubectl get pods -n kube-system.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Verify the VPA components are running by executing kubectl get pods -n kube-system and checking for VPA-related pods."
           },
           {
@@ -424,7 +424,7 @@
     ],
     "metadata": {
       "created": "2025-06-24T12:37:26.924Z",
-      "updated": "2025-06-25T11:22:22.548Z",
+      "updated": "2025-06-26T04:14:39.035Z",
       "description": "Tasks for master context"
     }
   }

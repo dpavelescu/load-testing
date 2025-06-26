@@ -1,0 +1,12 @@
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: resource-sizing-service-vpa
+  namespace: load-testing
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: resource-sizing-service
+  updatePolicy:
+    updateMode: "Off"  # Just get recommendations, don't auto-update
