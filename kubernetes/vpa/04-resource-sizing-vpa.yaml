@@ -1,4 +1,4 @@
-apiVersion: autoscaling.k8s.io/v1
+apiVersion: autoscaling.k8s.io/v1beta2
 kind: VerticalPodAutoscaler
 metadata:
   name: resource-sizing-service-vpa
@@ -10,3 +10,12 @@ spec:
     name: resource-sizing-service
   updatePolicy:
     updateMode: "Off"  # Just get recommendations, don't auto-update
+  resourcePolicy:
+    containerPolicies:
+    - containerName: '*'
+      minAllowed:
+        cpu: 25m
+        memory: 100Mi
+      maxAllowed:
+        cpu: 500m
+        memory: 512Mi

@@ -36,8 +36,8 @@ spec:
           value: "-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -XX:+UseG1GC -Xms64m"
         resources:
           requests:
-            memory: "128Mi"
-            cpu: "100m"
+            memory: "200Mi"  # Closer to observed 265Mi usage
+            cpu: "50m"       # Closer to observed 2m usage
           limits:
             memory: "512Mi"
             cpu: "500m"

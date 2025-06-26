@@ -1,59 +1,59 @@
 # Kubernetes Deployment Guide
 
-This directory contains Kubernetes manifests and deployment scripts for the Resource Sizing Service.
+This directory contains Kubernetes manifests for the Resource Sizing Service with VPA (Vertical Pod Autoscaler) integration.
 
 ## Prerequisites
 
 1. **Docker Desktop** with Kubernetes enabled
 2. **kubectl** command line tool
-3. **Docker image** built locally: `resource-sizing-service:latest`
+3. **Helm** package manager
+4. **Docker image** built locally: `resource-sizing-service:latest`
 
-## Enabling Kubernetes in Docker Desktop
+## Directory Structure
 
-1. Open Docker Desktop
-2. Go to Settings → Kubernetes
-3. Check "Enable Kubernetes"
-4. Click "Apply & Restart"
-5. Wait for Kubernetes to start (green indicator)
+```
+kubernetes/
+├── app/                    # Application manifests
+│   ├── 01-namespace.yaml   # Load testing namespace
+│   ├── 02-configmap.yaml   # Application configuration
+│   ├── 03-deployment.yaml  # Spring Boot deployment
+│   ├── 04-service.yaml     # Kubernetes service
+│   └── 05-hpa-template.yaml # HPA template (for future use)
+├── monitoring/             # Prometheus monitoring setup
+├── vpa/                   # VPA configuration
+│   ├── 04-resource-sizing-vpa.yaml # VPA definition
+│   ├── vpa-values.yaml    # Helm values
+│   └── README.md          # VPA setup guide
+├── cleanup.bat           # Cleanup script
+└── README.md            # This file
+```
 
 ## Quick Deployment
 
-### Windows
-```batch
-kubernetes\deploy.bat
-```
-
-### Linux/Mac
-```bash
-chmod +x kubernetes/deploy.sh
-./kubernetes/deploy.sh
-```
-
-## Manual Deployment
-
-1. **Build the Docker image:**
+1. **Build and deploy the application:**
    ```bash
+   # Build Docker image
    docker build -t resource-sizing-service:latest .
+   
+   # Deploy application
+   kubectl apply -f kubernetes/app/
    ```
 
-2. **Deploy to Kubernetes:**
+2. **Install VPA using Helm:**
    ```bash
-   kubectl apply -f kubernetes/app/01-namespace.yaml
-   kubectl apply -f kubernetes/app/02-configmap.yaml
-   kubectl apply -f kubernetes/app/03-deployment.yaml
-   kubectl apply -f kubernetes/app/04-service.yaml
-   kubectl apply -f kubernetes/app/05-servicemonitor.yaml
-   kubectl apply -f kubernetes/app/06-hpa.yaml
+   helm repo add fairwinds-stable https://charts.fairwinds.com/stable
+   helm install vpa fairwinds-stable/vpa --namespace vpa-system --create-namespace \
+     --set recommender.resources.requests.memory=200Mi \
+     --set recommender.resources.limits.memory=300Mi \
+     --set updater.resources.requests.memory=150Mi \
+     --set updater.resources.limits.memory=200Mi \
+     --set admissionController.resources.requests.memory=100Mi \
+     --set admissionController.resources.limits.memory=150Mi
    ```
 
-3. **Wait for deployment:**
+3. **Deploy VPA configuration:**
    ```bash
-   kubectl wait --for=condition=available --timeout=300s deployment/resource-sizing-service -n load-testing
-   ```
-
-4. **Access the service:**
-   ```bash
-   kubectl port-forward service/resource-sizing-service 8080:8080 -n load-testing
+   kubectl apply -f kubernetes/vpa/04-resource-sizing-vpa.yaml
    ```
 
 ## Verification
