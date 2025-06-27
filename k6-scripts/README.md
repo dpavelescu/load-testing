@@ -25,6 +25,19 @@ K6_OUT_DIR=./k6-results
    - Longer duration for memory pressure testing
    - Includes garbage collection and memory statistics
 
+### **⚡ Throughput-Based CPU Calibration** - `throughput-cpu-calibration.js` ⭐
+**Purpose**: Precise throughput control for CPU resource calibration
+- **Exact RPS Control**: Maintains precisely 3 RPS (configurable)  
+- **CPU Focused**: Sustained load for accurate CPU measurement
+- **VPA Integration**: Perfect for CPU request/limit optimization
+- **Production Ready**: Configurable for any throughput requirement
+
+**Key Features**:
+- Uses `constant-arrival-rate` executor for exact throughput
+- No dependency on virtual user calculations
+- Weighted request scenarios (light/moderate CPU operations)
+- Comprehensive CPU calibration metrics
+
 ## Running Tests
 
 ### Prerequisites
@@ -42,6 +55,9 @@ k6 run k6-scripts/basic-load-test.js
 
 # Memory simulation test
 k6 run k6-scripts/memory-simulation-test.js
+
+# Throughput-based CPU calibration test
+k6 run k6-scripts/throughput-cpu-calibration.js
 
 # With custom base URL
 k6 run -e BASE_URL=http://my-service:8080 k6-scripts/basic-load-test.js
@@ -92,3 +108,56 @@ k6 run --summary-export=summary.json k6-scripts/basic-load-test.js
 - **http_reqs**: Total number of requests
 - **vus**: Current number of virtual users
 - **iterations**: Total test iterations completed
+
+## 🎯 Virtual Users vs Throughput: The Critical Difference
+
+### **The Problem with Virtual Users**
+Traditional load testing uses "virtual users" (VUs), but this creates unpredictable throughput:
+- **VUs ≠ Requests per Second**: 10 VUs might generate 5 RPS or 50 RPS depending on response times
+- **Variable CPU Load**: CPU usage fluctuates based on response times, not request rate
+- **Inconsistent VPA Data**: VPA gets inconsistent CPU patterns, making recommendations unreliable
+
+### **The Solution: Throughput-Based Testing**
+Our throughput-based approach uses K6's `constant-arrival-rate` executor:
+- **Exact RPS Control**: Maintains precisely 3 RPS regardless of response times
+- **Consistent CPU Load**: Predictable CPU utilization for accurate VPA calibration
+- **Real-World Simulation**: Mirrors actual production traffic patterns
+
+### **Mathematical Relationship**
+```
+Traditional Formula (Unreliable):
+VUs = Target RPS × Average Response Time
+
+Better Formula (K6 Arrival Rate):
+arrival_rate = exact_requests_per_second
+VUs = automatically_calculated_by_k6
+```
+
+### **CPU Calibration Usage**
+
+#### Basic Usage (3 RPS for 10 minutes):
+```bash
+k6 run k6-scripts/throughput-cpu-calibration.js
+```
+
+#### Custom Throughput:
+```bash
+k6 run -e TARGET_RPS=5 -e TEST_DURATION=15m k6-scripts/throughput-cpu-calibration.js
+```
+
+#### Different CPU Calibration Scenarios:
+```bash
+# Light CPU calibration (1 RPS)
+k6 run -e TARGET_RPS=1 -e TEST_DURATION=15m k6-scripts/throughput-cpu-calibration.js
+
+# Moderate CPU calibration (5 RPS)  
+k6 run -e TARGET_RPS=5 -e TEST_DURATION=8m k6-scripts/throughput-cpu-calibration.js
+
+# Heavy CPU calibration (10 RPS)
+k6 run -e TARGET_RPS=10 -e TEST_DURATION=5m k6-scripts/throughput-cpu-calibration.js
+```
+
+#### Windows Batch File:
+```batch
+run-throughput-test.bat
+```
