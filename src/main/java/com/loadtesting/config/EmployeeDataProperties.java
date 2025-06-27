@@ -1,14 +1,12 @@
 package com.loadtesting.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * Configuration properties for employee data simulation.
  * These properties allow customization of data generation for different
  * memory consumption scenarios during load testing.
  */
-@Configuration
 @ConfigurationProperties(prefix = "app.employee")
 public class EmployeeDataProperties {
     

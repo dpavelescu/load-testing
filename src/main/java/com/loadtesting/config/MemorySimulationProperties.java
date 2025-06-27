@@ -1,7 +1,6 @@
 package com.loadtesting.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -9,7 +8,6 @@ import java.util.HashMap;
 /**
  * Configuration properties for memory simulation scenarios
  */
-@Configuration
 @ConfigurationProperties(prefix = "app.employee.memory")
 public class MemorySimulationProperties {
     
