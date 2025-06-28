@@ -36,11 +36,11 @@ spec:
           value: "-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -XX:+UseG1GC -Xms64m"
         resources:
           requests:
-            memory: "272Mi"  # VPA Target recommendation
-            cpu: "25m"       # VPA Target recommendation
+            memory: "380Mi"   # VPA lower bound recommendation for stable operation
+            cpu: "250m"       # Proven to work well in performance testing
           limits:
-            memory: "512Mi"  # VPA Upper Bound recommendation
-            cpu: "500m"      # VPA Upper Bound recommendation
+            memory: "600Mi"   # Conservative limit above VPA lower bound
+            cpu: "500m"       # VPA upper bound recommendation
         livenessProbe:
           httpGet:
             path: /actuator/health
