@@ -1,21 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: resource-sizing-service
+  name: resource-sizing-service-single
   namespace: load-testing
   labels:
     app: resource-sizing-service
     version: v1
+    deployment-type: single-pod-reference
 spec:
-  replicas: 3  # Three replicas for horizontal scaling with optimized resources
+  replicas: 1  # Single replica - VPA optimized configuration (REFERENCE)
   selector:
     matchLabels:
       app: resource-sizing-service
+      deployment-type: single-pod-reference
   template:
     metadata:
       labels:
         app: resource-sizing-service
         version: v1
+        deployment-type: single-pod-reference
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: "8080"
@@ -36,11 +39,11 @@ spec:
           value: "-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -XX:+UseG1GC -Xms64m"
         resources:
           requests:
-            memory: "220Mi"   # Approach 2: 200Mi JVM baseline + 20Mi app buffer per pod
-            cpu: "100m"       # Sufficient for JVM startup and steady-state operation
+            memory: "380Mi"   # VPA-optimized: Proven optimal for single pod
+            cpu: "250m"       # VPA-optimized: Handles startup and steady-state perfectly
           limits:
-            memory: "300Mi"   # Reasonable upper limit per pod
-            cpu: "200m"       # Adequate burst capacity per pod
+            memory: "600Mi"   # Conservative limit above VPA lower bound
+            cpu: "500m"       # VPA upper bound recommendation
         livenessProbe:
           httpGet:
             path: /actuator/health

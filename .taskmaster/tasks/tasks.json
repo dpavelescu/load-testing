@@ -129,7 +129,7 @@
         "dependencies": [
           4
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": []
       },
       {
@@ -210,7 +210,7 @@
         "dependencies": [
           6
         ],
-        "status": "in-progress",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -251,7 +251,7 @@
               3
             ],
             "details": "Monitor the VPA recommendations by checking the status and events using kubectl describe vpa <vpa-name>. Ensure that the recommendations are being updated based on the resource usage of the Spring Boot service.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Review the VPA status and events to confirm that recommendations are being generated. Adjust the Spring Boot service load and verify that VPA recommendations change accordingly."
           }
         ]
@@ -342,56 +342,100 @@
       {
         "id": 10,
         "title": "Perform Horizontal Scaling Calculations",
-        "description": "Analyze resource usage for single-instance and extrapolate for multi-instance scenarios.",
-        "details": "Use collected metrics to calculate resource needs for horizontal scaling. Provide recommendations for HPA configuration based on analysis.",
-        "testStrategy": "Validate scaling calculations by simulating multi-instance scenarios and observing resource distribution.",
-        "priority": "medium",
+        "description": "Transition from a VPA-optimized single pod to a 3-pod horizontal deployment and analyze resource usage.",
+        "status": "pending",
         "dependencies": [
           9
         ],
-        "status": "pending",
+        "priority": "medium",
+        "details": "Replace the current VPA-optimized single pod with 3 pod instances. Proportionally reduce individual pod resources, ensuring same or better performance. Analyze container baseline overhead and optimize resource consumption during idle periods. Avoid VPA+HPA conflicts by using static resource allocation for 3 pods. Focus on multi-instance efficiency versus single-instance VPA optimization.",
+        "testStrategy": "Validate that 3 smaller pods handle the same 4 RPS load with equal or better efficiency compared to a single pod.",
         "subtasks": [
           {
             "id": 1,
             "title": "Collect and Analyze Single-Instance Resource Metrics",
             "description": "Gather and analyze resource usage metrics from a single instance to understand baseline performance.",
+            "status": "done",
             "dependencies": [],
-            "details": "Use monitoring tools to collect CPU, memory, and network usage metrics from a single instance during load tests. Analyze these metrics to determine average and peak resource usage.",
-            "status": "pending",
+            "details": "Use monitoring tools to collect CPU, memory, and network usage metrics from a single instance during load tests. Analyze these metrics to determine average and peak resource usage.\n<info added on 2025-06-28T14:10:33.180Z>\nCompleted analysis of single-instance resource metrics from our successful 15-minute balanced pressure test:\n\nCURRENT SINGLE POD METRICS (15-min test at 4 RPS):\n- CPU Request: 250m, Actual Usage: 2m (0.8% utilization)\n- Memory Request: 380Mi, Actual Usage: 255Mi (67% utilization)\n- Performance: 0% error rate, 3.998 RPS achieved, p95 response time 1.34s\n- VU Efficiency: Only needed 5 VUs max (excellent efficiency)\n\nKEY FINDINGS:\n1. CPU is massively over-provisioned (250m vs 2m actual = 125x overhead)\n2. Memory is well-sized with reasonable headroom (380Mi vs 255Mi = 33% headroom)\n3. Application shows excellent performance characteristics\n4. Very low actual resource consumption during realistic load\n\nBASELINE ANALYSIS:\n- JVM baseline memory: ~200-255Mi per instance\n- Application startup overhead: Requires burst CPU during initialization\n- Runtime efficiency: Very low CPU usage during steady-state operation\n- Load handling: Single pod efficiently handles 4 RPS with significant headroom\n\nThis analysis provides the foundation for 3-pod resource calculation.\n</info added on 2025-06-28T14:10:33.180Z>",
             "testStrategy": "Verify the accuracy of collected metrics by comparing them with expected values from previous load tests."
           },
           {
             "id": 2,
             "title": "Extrapolate Multi-Instance Resource Requirements",
             "description": "Use single-instance metrics to calculate the resource requirements for multiple instances.",
+            "status": "in-progress",
             "dependencies": [
               1
             ],
-            "details": "Based on the analyzed single-instance metrics, calculate the total resource requirements for scaling to multiple instances. Consider factors such as expected load increase and redundancy needs.",
-            "status": "pending",
+            "details": "Based on the analyzed single-instance metrics, calculate the total resource requirements for scaling to multiple instances. Consider factors such as expected load increase and redundancy needs. Proportionally reduce resources per pod, dividing by 3 while considering baseline overhead.\n<info added on 2025-06-28T14:14:27.198Z>\nCompleted multi-instance resource calculation using Approach 2 (Baseline Overhead Consideration):\n\nANALYSIS COMPLETED:\n- Single pod proven optimal: 250m CPU, 380Mi memory (0% error rate at 4 RPS)\n- Actual usage: 2m CPU, 255Mi memory during peak load\n- JVM baseline overhead identified: ~200Mi per instance (unavoidable)\n- Application memory usage: 55Mi (255Mi total - 200Mi JVM baseline)\n\nAPPROACH 2 CALCULATION:\nPer Pod Resources (3 total pods):\n- CPU: 100m per pod (higher than simple division to handle JVM startup)\n- Memory: 220Mi per pod (200Mi JVM baseline + 20Mi app buffer)\n- CPU Limit: 200m per pod (adequate burst capacity)\n- Memory Limit: 300Mi per pod (reasonable upper limit)\n\nTOTAL RESOURCE IMPACT:\n- Total CPU: 300m (vs 250m single pod = 20% increase)\n- Total Memory: 660Mi (vs 380Mi single pod = 74% increase)\n\nTRADE-OFFS IDENTIFIED:\n✅ Resilience: Pod failures don't affect service\n✅ Load Distribution: Better connection handling\n⚠️ Resource Overhead: 20% CPU, 74% memory increase due to JVM baseline duplication\n⚠️ Complexity: Multiple pod management\n\nNEXT: Create 3-pod deployment configuration with these optimized resource settings.\n</info added on 2025-06-28T14:14:27.198Z>",
             "testStrategy": "Cross-verify calculations with historical data from similar scaling scenarios to ensure accuracy."
           },
           {
             "id": 3,
             "title": "Determine Horizontal Pod Autoscaler (HPA) Thresholds",
             "description": "Define the appropriate HPA thresholds for scaling based on the extrapolated resource requirements.",
+            "status": "pending",
             "dependencies": [
               2
             ],
-            "details": "Set HPA thresholds for CPU and memory based on the calculated multi-instance resource requirements. Ensure thresholds align with business requirements for performance and cost.",
-            "status": "pending",
+            "details": "Set HPA thresholds for CPU and memory based on the calculated multi-instance resource requirements. Ensure thresholds align with business requirements for performance and cost. Avoid conflicts with VPA by focusing on static resource allocation.",
             "testStrategy": "Simulate load conditions to test if the HPA thresholds trigger scaling actions appropriately."
           },
           {
             "id": 4,
             "title": "Provide Recommendations for HPA Configuration",
             "description": "Compile and document recommendations for configuring the HPA based on the analysis.",
+            "status": "pending",
             "dependencies": [
               3
             ],
             "details": "Create a detailed document outlining the recommended HPA configuration, including threshold values, scaling policies, and any assumptions made during calculations.",
-            "status": "pending",
             "testStrategy": "Review the document with stakeholders to ensure it meets business and technical requirements."
+          },
+          {
+            "id": 5,
+            "title": "Transition to 3-Pod Deployment",
+            "description": "Replace the VPA-optimized single pod with 3 pod instances and adjust resource allocation.",
+            "status": "pending",
+            "dependencies": [
+              1
+            ],
+            "details": "Deploy 3 pod instances with resources divided by 3 from the single pod, considering efficiency improvements. Remove VPA and use static resource allocation. Ensure the deployment maintains 4 RPS capability across the 3 instances.",
+            "testStrategy": "Ensure the 3 pods are deployed correctly and verify resource allocation matches the plan."
+          },
+          {
+            "id": 6,
+            "title": "Analyze Container Startup and Baseline Overhead",
+            "description": "Evaluate container startup times and baseline memory requirements for each instance.",
+            "status": "pending",
+            "dependencies": [
+              5
+            ],
+            "details": "Analyze the startup overhead and JVM baseline memory requirements to optimize resource consumption during idle periods. Focus on achieving efficiency in the multi-instance setup.",
+            "testStrategy": "Compare startup times and baseline memory usage with expected values to ensure efficiency."
+          },
+          {
+            "id": 7,
+            "title": "Test Load Distribution and Network Efficiency",
+            "description": "Evaluate load distribution and network efficiency with the 3-pod setup.",
+            "status": "pending",
+            "dependencies": [
+              5
+            ],
+            "details": "Conduct load tests to ensure that the 3 pods handle the same 4 RPS load with equal or better efficiency. Analyze network and connection pooling efficiency.",
+            "testStrategy": "Monitor load distribution and network performance metrics to validate efficiency improvements."
+          },
+          {
+            "id": 8,
+            "title": "Compare Resource Utilization",
+            "description": "Compare resource utilization between the single pod and the 3-pod deployment.",
+            "status": "pending",
+            "dependencies": [
+              7
+            ],
+            "details": "Analyze and document the differences in resource utilization, focusing on CPU, memory, and network usage. Ensure that the 3-pod deployment demonstrates equal or better resource efficiency compared to the single pod.",
+            "testStrategy": "Ensure that the 3-pod deployment demonstrates equal or better resource efficiency compared to the single pod."
           }
         ]
       },
@@ -424,7 +468,7 @@
     ],
     "metadata": {
       "created": "2025-06-24T12:37:26.924Z",
-      "updated": "2025-06-26T04:22:31.311Z",
+      "updated": "2025-06-28T14:12:28.349Z",
       "description": "Tasks for master context"
     }
   }

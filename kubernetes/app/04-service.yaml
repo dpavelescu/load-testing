@@ -11,11 +11,12 @@ metadata:
     prometheus.io/port: "8080"
     prometheus.io/path: "/actuator/prometheus"
 spec:
-  type: ClusterIP
+  type: NodePort
   ports:
   - name: http
     port: 8080
     targetPort: http
     protocol: TCP
+    nodePort: 30080  # Fixed NodePort for consistent testing
   selector:
     app: resource-sizing-service

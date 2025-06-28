@@ -36,15 +36,16 @@ export function setup() {
     console.log('Target RPS: 4 (MEANINGFUL PRESSURE)');
     console.log('Test Duration: 5m');
     console.log('Focus: Realistic memory + latency pressure at sustainable RPS');
-    console.log('Base URL: http://localhost:8080');
+    console.log('Base URL: http://localhost:30080 (NodePort - True Load Balancing)');
     console.log('');
     console.log('⚖️ BALANCED PRESSURE: Testing meaningful 4 RPS with realistic stress');
     console.log('Memory: Significant objects, realistic retention patterns');
     console.log('Latency: Production-like database delays');
+    console.log('🔄 LOAD BALANCING: Using NodePort for true Kubernetes service distribution');
     console.log('');
 
     // Health check
-    const healthResponse = http.get('http://localhost:8080/actuator/health');
+    const healthResponse = http.get('http://localhost:30080/actuator/health');
     const healthCheck = check(healthResponse, {
         'Health check passed': (r) => r.status === 200,
         'Service is UP': (r) => r.json() && r.json().status === 'UP',
@@ -55,7 +56,7 @@ export function setup() {
     }
 
     // Get memory stats
-    const memResponse = http.get('http://localhost:8080/api/memory/stats');
+    const memResponse = http.get('http://localhost:30080/api/memory/stats');
     if (memResponse.status === 200) {
         const memStats = memResponse.json();
         const memoryUsage = ((memStats.used / memStats.max) * 100).toFixed(2);
@@ -67,7 +68,7 @@ export function setup() {
     
     console.log('');
     console.log('Starting BALANCED PRESSURE test...');
-    return { baseUrl: 'http://localhost:8080' };
+    return { baseUrl: 'http://localhost:30080' };
 }
 
 export default function(data) {
