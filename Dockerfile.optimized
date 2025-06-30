@@ -1,0 +1,62 @@
+# ======================================
+# OPTIMIZED DOCKERFILE FOR RESOURCE EFFICIENCY
+# ======================================
+
+# Build stage with Alpine for smaller image
+FROM maven:3.9-eclipse-temurin-17-alpine AS build
+
+# Set working directory
+WORKDIR /app
+
+# Copy pom.xml and download dependencies (cached layer)
+COPY pom.xml .
+RUN mvn dependency:go-offline -q
+
+# Copy source code and build with optimizations
+COPY src src
+RUN mvn clean package -DskipTests -q \
+    -Dmaven.compiler.compilerArgs="-XX:+TieredCompilation -XX:TieredStopAtLevel=1" \
+    && mv target/*.jar app.jar
+
+# ======================================
+# RUNTIME STAGE - OPTIMIZED
+# ======================================
+
+# Use distroless for minimal runtime (no shell, package manager, etc.)
+FROM gcr.io/distroless/java17-debian12:nonroot
+
+# Or alternative: Alpine-based JRE (smaller but with shell access)
+# FROM eclipse-temurin:17-jre-alpine
+
+WORKDIR /app
+
+# Copy only the JAR (no build artifacts)
+COPY --from=build /app/app.jar app.jar
+
+# Copy configuration if needed
+COPY --from=build /app/src/main/resources/application*.yml ./config/
+
+# Set optimized JVM flags for containers
+ENV JAVA_TOOL_OPTIONS="\
+-XX:+UseContainerSupport \
+-XX:InitialRAMPercentage=50.0 \
+-XX:MaxRAMPercentage=75.0 \
+-XX:+UseG1GC \
+-XX:MaxGCPauseMillis=100 \
+-XX:+UseStringDeduplication \
+-XX:+OptimizeStringConcat \
+-XX:+TieredCompilation \
+-XX:TieredStopAtLevel=1 \
+-XX:+UnlockExperimentalVMOptions \
+-XX:+UseZGC \
+-Dspring.jmx.enabled=false \
+-Dspring.output.ansi.enabled=NEVER \
+-Djava.security.egd=file:/dev/./urandom \
+-Dfile.encoding=UTF-8 \
+-Duser.timezone=UTC"
+
+# Expose port
+EXPOSE 8080
+
+# Run with optimized startup
+ENTRYPOINT ["java", "-jar", "app.jar"]

@@ -1,0 +1,33 @@
+# ======================================
+# ALTERNATIVE: NATIVE IMAGE DOCKERFILE  
+# (For ultimate resource efficiency)
+# ======================================
+
+FROM ghcr.io/graalvm/graalvm-community:17 AS build
+
+# Install native-image
+RUN gu install native-image
+
+WORKDIR /app
+
+# Copy pom.xml and update for native build
+COPY pom.xml .
+COPY src src
+
+# Add native profile configuration to pom.xml
+RUN mvn clean package -Pnative -DskipTests \
+    -Dspring-boot.build-image.skip=true
+
+# Runtime stage for native image
+FROM gcr.io/distroless/base-debian12:nonroot
+
+WORKDIR /app
+
+# Copy native executable
+COPY --from=build /app/target/resource-sizing-service native-app
+
+# Native apps don't need JVM
+EXPOSE 8080
+
+# Much faster startup, lower memory usage
+ENTRYPOINT ["./native-app"]

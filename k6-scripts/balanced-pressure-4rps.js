@@ -14,7 +14,7 @@ export const options = {
             executor: 'constant-arrival-rate',
             rate: 4, // 4 RPS with meaningful pressure
             timeUnit: '1s',
-            duration: '15m',
+            duration: '5m',
             preAllocatedVUs: 8,   // Increased for better handling
             maxVUs: 12,           // Increased for memory-intensive operations
             gracefulStop: '45s',

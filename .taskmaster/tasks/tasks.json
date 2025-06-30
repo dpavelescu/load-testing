@@ -364,7 +364,7 @@
             "id": 2,
             "title": "Extrapolate Multi-Instance Resource Requirements",
             "description": "Use single-instance metrics to calculate the resource requirements for multiple instances.",
-            "status": "in-progress",
+            "status": "done",
             "dependencies": [
               1
             ],
@@ -397,7 +397,7 @@
             "id": 5,
             "title": "Transition to 3-Pod Deployment",
             "description": "Replace the VPA-optimized single pod with 3 pod instances and adjust resource allocation.",
-            "status": "pending",
+            "status": "done",
             "dependencies": [
               1
             ],
@@ -419,7 +419,7 @@
             "id": 7,
             "title": "Test Load Distribution and Network Efficiency",
             "description": "Evaluate load distribution and network efficiency with the 3-pod setup.",
-            "status": "pending",
+            "status": "done",
             "dependencies": [
               5
             ],
@@ -468,7 +468,7 @@
     ],
     "metadata": {
       "created": "2025-06-24T12:37:26.924Z",
-      "updated": "2025-06-28T14:12:28.349Z",
+      "updated": "2025-06-28T15:21:02.389Z",
       "description": "Tasks for master context"
     }
   }

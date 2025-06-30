@@ -1,0 +1,73 @@
+# ======================================
+# SPRING BOOT OPTIMIZATION CONFIGURATION
+# application-optimized.yml
+# ======================================
+
+spring:
+  main:
+    # Reduce startup time
+    lazy-initialization: true
+    banner-mode: off
+  
+  # JPA optimizations
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+  
+  # Disable unnecessary features
+  jmx:
+    enabled: false
+  
+  # Jackson optimizations
+  jackson:
+    serialization:
+      write-dates-as-timestamps: true
+      write-durations-as-timestamps: true
+  
+  # Web optimizations
+  web:
+    resources:
+      cache:
+        cachecontrol:
+          max-age: 3600
+  
+  # Actuator minimal
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: health,metrics,prometheus
+    endpoint:
+      health:
+        probes:
+          enabled: true
+        group:
+          readiness:
+            include: db,custom
+          liveness:
+            include: ping
+
+# Server optimizations
+server:
+  # Connection handling
+  tomcat:
+    threads:
+      max: 50        # Reduced from default 200
+      min-spare: 4   # Reduced from default 10
+    connection-timeout: 10s
+    max-connections: 2000
+  
+  # Compression
+  compression:
+    enabled: true
+    mime-types: application/json,text/plain,text/html
+    min-response-size: 1024
+
+# Logging optimizations
+logging:
+  level:
+    root: WARN
+    com.loadtesting: INFO
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"

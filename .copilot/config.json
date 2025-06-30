@@ -1,0 +1,20 @@
+{
+  "inputs": {
+    "anthropic_api_key": {
+      "type": "password",
+      "description": "Enter your Anthropic API Key"
+    }
+  },
+  "providers": {
+    "anthropic": {
+      "apiKey": "${inputs.anthropic_api_key}",
+      "model": "claude-3-7-sonnet-20250219",
+      "maxTokensToSample": 1024
+    }
+  },
+  "context": {
+    "strategy": "smart",
+    "maxPromptTokens": 4000,
+    "maxContextLines": 200
+  }
+}
