@@ -1,0 +1,14 @@
+# Prometheus Operator CRD for Prometheus instance
+# (Assumes Prometheus Operator is already installed)
+apiVersion: monitoring.coreos.com/v1
+kind: Prometheus
+metadata:
+  name: k8s-prometheus
+  namespace: monitoring
+spec:
+  serviceAccountName: prometheus-k8s
+  serviceMonitorSelector: {}
+  resources:
+    requests:
+      memory: 400Mi
+  enableAdminAPI: false
