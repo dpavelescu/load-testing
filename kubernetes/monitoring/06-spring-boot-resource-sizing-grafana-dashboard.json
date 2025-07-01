@@ -12,8 +12,8 @@
       "title": "Active Requests (Count)",
       "targets": [
         {
-          "expr": "sum(http_server_requests_active_seconds_count{job=\"resource-sizing-service\"})",
-          "legendFormat": "Active Requests"
+          "expr": "http_server_requests_active_seconds_count{job=\"resource-sizing-service\"}",
+          "legendFormat": "Active - {{instance}}"
         }
       ],
       "datasource": "Prometheus",
@@ -24,8 +24,8 @@
       "title": "Max Response Time (s)",
       "targets": [
         {
-          "expr": "max(http_server_requests_seconds_max{job=\"resource-sizing-service\"})",
-          "legendFormat": "Max Response Time"
+          "expr": "http_server_requests_seconds_max{job=\"resource-sizing-service\"}",
+          "legendFormat": "Max - {{instance}}"
         }
       ],
       "datasource": "Prometheus",
@@ -33,11 +33,11 @@
     },
     {
       "type": "timeseries",
-      "title": "CPU Usage per Pod (millicores)",
+      "title": "JVM CPU Usage (%)",
       "targets": [
         {
-          "expr": "sum(rate(container_cpu_usage_seconds_total{namespace=\"load-testing\",container=\"resource-sizing-service\"}[1m])) by (pod) * 1000",
-          "legendFormat": "{{pod}}"
+          "expr": "process_cpu_usage{job=\"resource-sizing-service\"} * 100",
+          "legendFormat": "{{instance}}"
         }
       ],
       "datasource": "Prometheus",
@@ -45,11 +45,11 @@
     },
     {
       "type": "timeseries",
-      "title": "Memory Usage per Pod (MiB)",
+      "title": "JVM Memory Usage (MiB)",
       "targets": [
         {
-          "expr": "container_memory_usage_bytes{namespace=\"load-testing\",container=\"resource-sizing-service\"} / 1024 / 1024",
-          "legendFormat": "{{pod}}"
+          "expr": "jvm_memory_used_bytes{job=\"resource-sizing-service\"} / 1024 / 1024",
+          "legendFormat": "{{area}} - {{instance}}"
         }
       ],
       "datasource": "Prometheus",
@@ -78,6 +78,50 @@
       ],
       "datasource": "Prometheus",
       "gridPos": {"h": 8, "w": 12, "x": 12, "y": 16}
+    },
+    {
+      "type": "timeseries",
+      "title": "Response Time Metrics (s)",
+      "targets": [
+        {
+          "expr": "http_server_requests_seconds_max{job=\"resource-sizing-service\"}",
+          "legendFormat": "Max - {{instance}}"
+        },
+        {
+          "expr": "rate(http_server_requests_seconds_sum{job=\"resource-sizing-service\"}[1m]) / rate(http_server_requests_seconds_count{job=\"resource-sizing-service\"}[1m])",
+          "legendFormat": "Avg - {{instance}}"
+        }
+      ],
+      "datasource": "Prometheus",
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 24}
+    },
+    {
+      "type": "timeseries",
+      "title": "Request Rate (req/sec)",
+      "targets": [
+        {
+          "expr": "rate(http_server_requests_seconds_count{job=\"resource-sizing-service\"}[1m])",
+          "legendFormat": "RPS - {{instance}}"
+        },
+        {
+          "expr": "sum(rate(http_server_requests_seconds_count{job=\"resource-sizing-service\"}[1m]))",
+          "legendFormat": "Total RPS"
+        }
+      ],
+      "datasource": "Prometheus",
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 24}
+    },
+    {
+      "type": "timeseries",
+      "title": "Request Duration by Endpoint (s)",
+      "targets": [
+        {
+          "expr": "rate(http_server_requests_seconds_sum{job=\"resource-sizing-service\"}[1m]) / rate(http_server_requests_seconds_count{job=\"resource-sizing-service\"}[1m])",
+          "legendFormat": "{{uri}} {{method}} - {{instance}}"
+        }
+      ],
+      "datasource": "Prometheus",
+      "gridPos": {"h": 8, "w": 24, "x": 0, "y": 32}
     }
   ]
 }
