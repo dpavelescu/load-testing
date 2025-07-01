@@ -1,55 +1,49 @@
 # Monitoring Setup
 
-## Simplified Approach
+## Approach
 
-This monitoring setup is **purposefully minimal** and focused solely on resource sizing:
+This setup uses the Prometheus Operator to automate service discovery and scraping, and a Grafana deployment to visualize Kubernetes pod and JVM metrics for Spring Boot resource sizing tests.
 
-✅ **What we DO have:**
-- Minimal Prometheus (single container)
-- Direct Spring Boot metrics scraping
-- Essential container metrics
-- Simple query interface
-- No passwords or complex configuration
+### Components & Files
+1. **01-namespace.yaml**: Creates the `monitoring` namespace.
+2. **02-prometheus-cr.yaml**: Defines a Prometheus instance via the Prometheus Operator.
+3. **03-service-monitor.yaml**: ServiceMonitor for scraping the Spring Boot `/actuator/prometheus` endpoint.
+4. **04-grafana.yaml**: Deploys Grafana and exposes it.
+5. **05-grafana-datasource.yaml**: ConfigMap that provisions the Prometheus datasource for Grafana.
+6. **06-spring-boot-resource-sizing-grafana-dashboard.json**: Grafana dashboard JSON file for import.
 
-❌ **What we deliberately AVOID:**
-- Grafana (overengineered for resource sizing)
-- AlertManager (not needed for testing)
-- Node Exporter (fails on Docker Desktop)
-- Kube State Metrics (overkill for single-app testing)
-- Prometheus Operator (adds unnecessary complexity)
+## Component Ordering and Naming
+
+All monitoring manifests are prefixed with an index to define deployment order:
+
+- **01-namespace.yaml**: Create `monitoring` namespace.
+- **02-prometheus-cr.yaml**: Operator-managed Prometheus instance.
+- **03-service-monitor.yaml**: ServiceMonitor for Spring Boot metrics.
+- **04-grafana.yaml**: Grafana Deployment & Service.
+- **05-grafana-datasource.yaml**: Provision Prometheus datasource for Grafana.
+- **06-spring-boot-resource-sizing-grafana-dashboard.json**: Grafana dashboard JSON to import.
+
+Note: There is only one Grafana deployment (`04-grafana.yaml`) and one datasource config (`05-grafana-datasource.yaml`). Ensure file prefixes match this ordering.
 
 ## Quick Setup
 
-```bash
-# Deploy monitoring
+```cmd
+# Deploy monitoring resources
 kubectl apply -f kubernetes/monitoring/
 
-# Access Prometheus
-kubernetes/monitoring/access-monitoring.bat
+# Port-forward Prometheus
+kubectl port-forward svc/k8s-prometheus-operated -n monitoring 9090:9090
 
-# Run load tests and observe metrics
-k6 run k6-scripts/basic-load-test.js
+# Port-forward Grafana
+kubectl port-forward svc/grafana -n monitoring 30030:3000
 ```
 
-## Key Metrics to Watch
+Open:
+- Prometheus UI at http://localhost:9090
+- Grafana UI at http://localhost:30030
 
-1. **CPU Usage**: `rate(container_cpu_usage_seconds_total{pod=~"resource-sizing-service.*"}[1m])`
-2. **Memory Usage**: `container_memory_working_set_bytes{pod=~"resource-sizing-service.*"}`
-3. **JVM Memory**: `jvm_memory_used_bytes{application="resource-sizing-service"}`
-4. **HTTP Throughput**: `rate(http_server_requests_total{application="resource-sizing-service"}[1m])`
-
-## Resource Sizing Methodology
-
-1. **Baseline**: Run with minimal resources (100m CPU, 128Mi memory)
-2. **Load Test**: Apply various load patterns
-3. **Observe**: CPU throttling, memory pressure, GC pressure
-4. **Adjust**: Increase resources based on observed bottlenecks
-5. **Validate**: Confirm performance improvement
-6. **Document**: Final recommendations
-
-## No Sidecars Needed!
-
-- Spring Boot exposes metrics directly via Actuator
-- Prometheus scrapes via service discovery
-- No additional containers per pod
-- Minimal resource overhead
+## Next Steps
+1. Import the dashboard JSON into Grafana (via UI).
+2. Run K6 load tests to generate traffic (see `k6-scripts/`).
+3. Verify Grafana panels display CPU, memory, JVM, and HTTP metrics.
+4. Tune ServiceMonitor intervals or dashboard queries if needed.
