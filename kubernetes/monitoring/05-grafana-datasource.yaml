@@ -13,6 +13,6 @@ data:
       - name: Prometheus
         type: prometheus
         access: proxy
-        url: http://k8s-prometheus-operated:9090
+        url: http://prometheus-operated:9090
         isDefault: true
         editable: true
