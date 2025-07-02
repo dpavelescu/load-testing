@@ -1,127 +1,295 @@
 {
   "id": null,
-  "title": "Spring Boot Resource Sizing Overview",
-  "tags": ["spring-boot", "kubernetes", "performance"],
+  "uid": "spring-boot-perf",
+  "title": "Spring Boot Resource Sizing - Performance Analysis",
+  "description": "Research-grade performance analysis dashboard for Spring Boot resource sizing service",
+  "tags": ["spring-boot", "performance", "jvm", "resource-sizing"],
   "timezone": "browser",
-  "schemaVersion": 37,
-  "version": 5,
-  "refresh": "10s",
+  "editable": true,
+  "graphTooltip": 1,
+  "time": {
+    "from": "now-30m",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": ["5s", "10s", "30s", "1m", "5m", "15m", "30m", "1h"],
+    "time_options": ["5m", "15m", "1h", "6h", "12h", "24h", "2d", "7d", "30d"]
+  },
+  "refresh": "30s",
+  "version": 1,
   "panels": [
     {
-      "type": "timeseries",
-      "title": "Active Requests (Count)",
+      "id": 1,
+      "title": "HTTP Request Rate",
+      "type": "stat",
       "targets": [
         {
-          "expr": "http_server_requests_active_seconds_count{job=\"resource-sizing-service\"}",
-          "legendFormat": "Active - {{instance}}"
+          "expr": "sum(rate(http_server_requests_seconds_count{job=\"resource-sizing-service\"}[1m]))",
+          "legendFormat": "Requests/sec"
         }
       ],
-      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "steps": [
+              {"color": "green", "value": null},
+              {"color": "yellow", "value": 100},
+              {"color": "red", "value": 500}
+            ]
+          }
+        }
+      },
       "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0}
     },
     {
-      "type": "timeseries",
-      "title": "Max Response Time (s)",
+      "id": 2,
+      "title": "HTTP Average Response Time",
+      "type": "stat",
       "targets": [
         {
-          "expr": "http_server_requests_seconds_max{job=\"resource-sizing-service\"}",
-          "legendFormat": "Max - {{instance}}"
+          "expr": "rate(http_server_requests_seconds_sum{job=\"resource-sizing-service\"}[1m]) / rate(http_server_requests_seconds_count{job=\"resource-sizing-service\"}[1m])",
+          "legendFormat": "Avg Response Time"
         }
       ],
-      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "steps": [
+              {"color": "green", "value": null},
+              {"color": "yellow", "value": 0.1},
+              {"color": "red", "value": 0.5}
+            ]
+          }
+        }
+      },
       "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0}
     },
     {
+      "id": 3,
+      "title": "JVM Heap Memory Usage",
       "type": "timeseries",
-      "title": "JVM CPU Usage (%)",
       "targets": [
         {
-          "expr": "process_cpu_usage{job=\"resource-sizing-service\"} * 100",
-          "legendFormat": "{{instance}}"
-        }
-      ],
-      "datasource": "Prometheus",
-      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8}
-    },
-    {
-      "type": "timeseries",
-      "title": "JVM Memory Usage (MiB)",
-      "targets": [
-        {
-          "expr": "jvm_memory_used_bytes{job=\"resource-sizing-service\"} / 1024 / 1024",
-          "legendFormat": "{{area}} - {{instance}}"
-        }
-      ],
-      "datasource": "Prometheus",
-      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8}
-    },
-    {
-      "type": "timeseries",
-      "title": "JVM Heap Usage (MiB)",
-      "targets": [
-        {
-          "expr": "jvm_memory_used_bytes{area=\"heap\", job=\"resource-sizing-service\"} / 1024 / 1024",
-          "legendFormat": "Heap"
-        }
-      ],
-      "datasource": "Prometheus",
-      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 16}
-    },
-    {
-      "type": "timeseries",
-      "title": "GC Pause Time (s)",
-      "targets": [
-        {
-          "expr": "rate(jvm_gc_pause_seconds_sum{job=\"resource-sizing-service\"}[1m])",
-          "legendFormat": "GC Pause"
-        }
-      ],
-      "datasource": "Prometheus",
-      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 16}
-    },
-    {
-      "type": "timeseries",
-      "title": "Response Time Metrics (s)",
-      "targets": [
-        {
-          "expr": "http_server_requests_seconds_max{job=\"resource-sizing-service\"}",
-          "legendFormat": "Max - {{instance}}"
+          "expr": "sum by (instance) (jvm_memory_used_bytes{job=\"resource-sizing-service\",area=\"heap\"})",
+          "legendFormat": "Heap Used - {{instance}}"
         },
         {
-          "expr": "rate(http_server_requests_seconds_sum{job=\"resource-sizing-service\"}[1m]) / rate(http_server_requests_seconds_count{job=\"resource-sizing-service\"}[1m])",
-          "legendFormat": "Avg - {{instance}}"
+          "expr": "sum by (instance) (jvm_memory_max_bytes{job=\"resource-sizing-service\",area=\"heap\"})",
+          "legendFormat": "Heap Max - {{instance}}"
         }
       ],
-      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "color": {
+            "mode": "palette-classic"
+          }
+        }
+      },
+      "gridPos": {"h": 8, "w": 24, "x": 0, "y": 8}
+    },
+    {
+      "id": 4,
+      "title": "JVM Non-Heap Memory Usage",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "sum by (instance) (jvm_memory_used_bytes{job=\"resource-sizing-service\",area=\"nonheap\"})",
+          "legendFormat": "Non-heap Used - {{instance}}"
+        },
+        {
+          "expr": "sum by (instance) (jvm_memory_max_bytes{job=\"resource-sizing-service\",area=\"nonheap\"})",
+          "legendFormat": "Non-heap Max - {{instance}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "color": {
+            "mode": "palette-classic"
+          }
+        }
+      },
+      "gridPos": {"h": 8, "w": 24, "x": 0, "y": 16}
+    },
+    {
+      "id": 5,
+      "title": "HTTP Response Time by Pod",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "rate(http_server_requests_seconds_sum{job=\"resource-sizing-service\"}[1m]) / rate(http_server_requests_seconds_count{job=\"resource-sizing-service\"}[1m])",
+          "legendFormat": "Avg Response Time - {{instance}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "color": {
+            "mode": "palette-classic"
+          }
+        }
+      },
       "gridPos": {"h": 8, "w": 12, "x": 0, "y": 24}
     },
     {
+      "id": 6,
+      "title": "HTTP Error Rate",
       "type": "timeseries",
-      "title": "Request Rate (req/sec)",
       "targets": [
         {
-          "expr": "rate(http_server_requests_seconds_count{job=\"resource-sizing-service\"}[1m])",
-          "legendFormat": "RPS - {{instance}}"
-        },
-        {
-          "expr": "sum(rate(http_server_requests_seconds_count{job=\"resource-sizing-service\"}[1m]))",
-          "legendFormat": "Total RPS"
+          "expr": "sum(rate(http_server_requests_seconds_count{job=\"resource-sizing-service\",status=~\"4..|5..\"}[1m])) / sum(rate(http_server_requests_seconds_count{job=\"resource-sizing-service\"}[1m])) * 100",
+          "legendFormat": "Error Rate %"
         }
       ],
-      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "steps": [
+              {"color": "green", "value": null},
+              {"color": "yellow", "value": 1},
+              {"color": "red", "value": 5}
+            ]
+          }
+        }
+      },
       "gridPos": {"h": 8, "w": 12, "x": 12, "y": 24}
     },
     {
+      "id": 7,
+      "title": "JVM Garbage Collection Rate",
       "type": "timeseries",
-      "title": "Request Duration by Endpoint (s)",
+      "targets": [
+        {
+          "expr": "rate(jvm_gc_pause_seconds_count{job=\"resource-sizing-service\"}[1m])",
+          "legendFormat": "GC Rate - {{cause}} - {{instance}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ops",
+          "color": {
+            "mode": "palette-classic"
+          }
+        }
+      },
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 32}
+    },
+    {
+      "id": 8,
+      "title": "JVM Garbage Collection Time",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "rate(jvm_gc_pause_seconds_sum{job=\"resource-sizing-service\"}[1m])",
+          "legendFormat": "GC Time - {{cause}} - {{instance}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "color": {
+            "mode": "palette-classic"
+          }
+        }
+      },
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 32}
+    },
+    {
+      "id": 9,
+      "title": "HTTP Request Rate by Pod",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "rate(http_server_requests_seconds_count{job=\"resource-sizing-service\"}[1m])",
+          "legendFormat": "Pod - {{instance}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps",
+          "color": {
+            "mode": "palette-classic"
+          }
+        }
+      },
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 40}
+    },
+    {
+      "id": 10,
+      "title": "JVM Threads by Pod",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "jvm_threads_live_threads{job=\"resource-sizing-service\"}",
+          "legendFormat": "Live Threads - {{instance}}"
+        },
+        {
+          "expr": "jvm_threads_peak_threads{job=\"resource-sizing-service\"}",
+          "legendFormat": "Peak Threads - {{instance}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "palette-classic"
+          }
+        }
+      },
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 40}
+    },
+    {
+      "id": 11,
+      "title": "HTTP Response Time by Pod",
+      "type": "timeseries",
       "targets": [
         {
           "expr": "rate(http_server_requests_seconds_sum{job=\"resource-sizing-service\"}[1m]) / rate(http_server_requests_seconds_count{job=\"resource-sizing-service\"}[1m])",
-          "legendFormat": "{{uri}} {{method}} - {{instance}}"
+          "legendFormat": "Avg Response Time - {{instance}}"
         }
       ],
-      "datasource": "Prometheus",
-      "gridPos": {"h": 8, "w": 24, "x": 0, "y": 32}
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "color": {
+            "mode": "palette-classic"
+          }
+        }
+      },
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 48}
+    },
+    {
+      "id": 12,
+      "title": "CPU Usage by Pod",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "process_cpu_usage{job=\"resource-sizing-service\"}",
+          "legendFormat": "CPU Usage - {{instance}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "color": {
+            "mode": "palette-classic"
+          }
+        }
+      },
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 48}
     }
   ]
 }

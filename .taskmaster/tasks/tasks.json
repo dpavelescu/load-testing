@@ -408,7 +408,7 @@
             "id": 6,
             "title": "Analyze Container Startup and Baseline Overhead",
             "description": "Evaluate container startup times and baseline memory requirements for each instance.",
-            "status": "pending",
+            "status": "done",
             "dependencies": [
               5
             ],
@@ -449,7 +449,7 @@
         "dependencies": [
           10
         ],
-        "status": "pending",
+        "status": "in-progress",
         "subtasks": []
       },
       {
@@ -468,7 +468,7 @@
     ],
     "metadata": {
       "created": "2025-06-24T12:37:26.924Z",
-      "updated": "2025-07-01T04:48:07.600Z",
+      "updated": "2025-07-01T06:05:01.405Z",
       "description": "Tasks for master context"
     }
   }
